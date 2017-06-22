@@ -1,4 +1,4 @@
-# -*- coding=gbk -*-
+# -*- coding=utf-8 -*-
 
 import os
 import re
@@ -12,13 +12,12 @@ import datetime
 import StringIO
 import urlparse
 
-
 def down_barrage(video_page_url) :
     #get av_number
     parts = urlparse.urlparse(video_page_url).path
     av_number = parts.split("/")[-2];
     #make dir
-    xml_folder = r'./%s' % av_number
+    xml_folder = r'../movie_data/%s' % av_number
     if os.path.exists(xml_folder):
         pass
     else:
@@ -29,7 +28,7 @@ def down_barrage(video_page_url) :
     video_page_buffer = StringIO.StringIO(video_page_gz)
     #gzip decompress
     video_page_html = gzip.GzipFile(fileobj = video_page_buffer).read()
-    #print video_page_html
+    
     #get chat ID number
     cid_number = re.findall(r'cid=(\d+)', video_page_html)[0]
     comments_page_url = 'http://comment.bilibili.tv/rolldate,%s' % cid_number
@@ -53,21 +52,25 @@ def down_barrage(video_page_url) :
     #supplier's name
     #sup_name = re.findall(r'UP主：(..)+', video_page_html.encode('gbk'))[-1]
     #print sup_name
-
+'''
     #supplier's weibo
     sup_weibo = re.findall(r'http://weibo.com/\w*', video_page_html)[0]
     if sup_weibo == "http://weibo.com/bilibiliweb":
         sup_weibo = ""
     #print sup_weibo
 
-    #video tags
-    video_tags = re.findall(r'kwtags\(\[[(..), \w, \W]*\]\)', video_page_html)[0]
-    #print video_tags
-
     infofile = open('%s/info.txt' % (xml_folder), 'wb')
     infofile.write("supplier's weibo: " + sup_weibo + "\n")
-    infofile.write("tags info: " + video_tags + "\n")
     infofile.close()
+'''
 
-
-down_barrage("http://www.bilibili.com/video/av11373342/")
+if __name__ == '__main__':
+    down_barrage('http://www.bilibili.com/video/av11315720/')
+    down_barrage('http://www.bilibili.com/video/av11321491/')
+    '''
+    video_url_file = open('../movie_data/urlList')
+    video_urls = video_url_file.readlines()
+    for url in video_urls:
+        print url
+        down_barrage(url)
+    '''
