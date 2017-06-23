@@ -23,15 +23,27 @@ def analyze_one_file(filename, barrage_dict):
             st = time.localtime(sent_timestamp)
             format_send_date = time.strftime('%Y-%m-%d %H:%M:%S', st)
             value = child.text
-            
-            line_info = u''.join(send_time + '\t' + format_send_date + '\t' + value + '\n').encode('utf-8')
-            barrage_dict[barrage_id] = line_info
+            if value is not None and send_time is not None and format_send_date is not None:
+                line_info = u''.join(send_time + '\t' + format_send_date + '\t' + value + '\n').encode('utf-8')
+                barrage_dict[barrage_id] = line_info
+
+def analyze_all_xml():
+    root_dir = '../movie_data/'
+    for file in os.listdir(root_dir):
+        file_dir = root_dir + file
+        if os.path.isdir(file_dir):
+            print file
+            danmu_dict = dict()
+            for sub_file in os.listdir(file_dir):
+                sub_file_dir = file_dir + '/' + sub_file
+                file_type = sub_file.strip().split('.')[-1]
+                if file_type == 'xml':
+                    analyze_one_file(sub_file_dir, danmu_dict)
+            danmu_file = open(file_dir+'/'+file+'.danmu', 'w')
+            for key in danmu_dict:
+                danmu_file.write(danmu_dict[key])
+            danmu_file.close()
+
 
 if __name__ == '__main__':
-    barrage_dict = dict()
-    root_dir = '../movie_data/'
-    analyze_one_file('../movie_data/av11315720/20170620.xml', barrage_dict)
-    out_file = open('../movie_data/av11315720/av11315720.danmu', 'w')
-    for key in barrage_dict:
-        out_file.write(barrage_dict[key])
-    out_file.close()
+    analyze_all_xml()
