@@ -5,8 +5,11 @@ import time
 import xml.etree.ElementTree as ET
 
 def analyze_one_file(filename, barrage_dict):
-    xml_tree = ET.ElementTree(file=filename)
-    root = xml_tree.getroot()
+    try:
+        xml_tree = ET.ElementTree(file=filename)
+        root = xml_tree.getroot()
+    except:
+        return
 
     for child in root:
         attribs = child.attrib
@@ -31,10 +34,10 @@ def analyze_all_xml():
     root_dir = '../movie_data/'
     for file in os.listdir(root_dir):
         file_dir = root_dir + file
-        if os.path.isdir(file_dir):
-            print file
+        if file == 'av11303917' and os.path.isdir(file_dir):
             danmu_dict = dict()
             for sub_file in os.listdir(file_dir):
+                print sub_file
                 sub_file_dir = file_dir + '/' + sub_file
                 file_type = sub_file.strip().split('.')[-1]
                 if file_type == 'xml':
